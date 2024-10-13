@@ -6,37 +6,38 @@ namespace ConsoleBlackJack.Core
     /// <summary>
     /// Игрок
     /// </summary>
-    public class Player
+    public static class Player
     {
         /// <summary>
         /// Деньги игрока
         /// </summary>
-        public int Money { get; private set; }
+        public static int Money { get; private set; }
 
         /// <summary>
         /// Рука игрока
         /// </summary>
-        public Dictionary<int, Arm> Arms { get; private set; }
+        public static Dictionary<int, Arm> Arms { get; private set; }
 
-        public Player()
+        static Player()
         {
             Money = 0;
-            Arms = new Dictionary<int, Arm>();
-            Arms.Add(0, new Arm());
-        }
-        public Player(int money)
-        {
-            if (money <= 0) money = 0;
-            Money = money;
-            Arms = new Dictionary<int, Arm>();
-            Arms.Add(0, new Arm());
+            Arms = new Dictionary<int, Arm>() {{ 0, new Arm() }};
         }
         
+        /// <summary>
+        /// Новый игрок
+        /// </summary>
+        public static void NewPlayer()
+        {
+            Money = 0;
+            Arms = new Dictionary<int, Arm>() { { 0, new Arm() } };
+        }
+
         /// <summary>
         /// Добавление денег игроку
         /// </summary>
         /// <param name="money"></param>
-        public void GiveMoney(int money)
+        public static void GiveMoney(int money)
         {
             if (money <= 0) return;
             Money += money;
@@ -46,7 +47,7 @@ namespace ConsoleBlackJack.Core
         /// Изъятие денег игрока
         /// </summary>
         /// <param name="money"></param>
-        public void TakeMoney(int money)
+        public static void TakeMoney(int money)
         {
             if (money <= 0) return;
             if (money >= Money) Money = 0;
@@ -57,7 +58,7 @@ namespace ConsoleBlackJack.Core
         /// Добавление карты игроку
         /// </summary>
         /// <param name="card"></param>
-        public void GiveCard(int armId, BaseCard card)
+        public static void GiveCard(int armId, BaseCard card)
         {
             if (armId < 0 || armId >= Arms.Count) return;
             Arms[armId].GiveCard(card);
@@ -67,7 +68,7 @@ namespace ConsoleBlackJack.Core
         /// Изъятие карт игрока
         /// </summary>
         /// <param name="card"></param>
-        public List<BaseCard> TakeCards()
+        public static List<BaseCard> TakeCards()
         {
             List<BaseCard> cards = new List<BaseCard>();
             foreach (var arm in Arms)

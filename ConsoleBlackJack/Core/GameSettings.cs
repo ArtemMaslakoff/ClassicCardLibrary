@@ -13,6 +13,11 @@ namespace ConsoleBlackJack.Core
         public int StartPlayerMoney { get; private set; }
 
         /// <summary>
+        /// Количество колод в игре
+        /// </summary>
+        public int NumberOfDecks { get; private set; }
+
+        /// <summary>
         /// Задать чтартовое количество денег игрока
         /// </summary>
         /// <param name="startPlayerMoney"></param>
@@ -20,6 +25,17 @@ namespace ConsoleBlackJack.Core
         {
             StartPlayerMoney = startPlayerMoney;
             if (startPlayerMoney < 0) StartPlayerMoney = 0;
+        }
+
+        /// <summary>
+        /// Задать количество колод в игре
+        /// </summary>
+        /// <param name="numberOfDecks"></param>
+        public void SetNumberOfDecks(int numberOfDecks)
+        {
+            NumberOfDecks = numberOfDecks;
+            if (numberOfDecks < 1) NumberOfDecks = 1;
+            if (numberOfDecks > 8) NumberOfDecks = 8;
         }
 
         /// <summary>
@@ -31,6 +47,7 @@ namespace ConsoleBlackJack.Core
         {
             GameSettings clone = new GameSettings();
             clone.StartPlayerMoney = StartPlayerMoney;
+            clone.NumberOfDecks = NumberOfDecks;
             return clone;
         }
     }

@@ -11,14 +11,14 @@ namespace ConsoleBlackJack.Controllers
         /// <summary>
         /// 
         /// </summary>
-        private static GameSettings timeGameSettings = BlackJackController.GameSettings.Clone();
+        private static GameSettings timeGameSettings = BlackJackGame.GameSettings.Clone();
 
         /// <summary>
         /// 
         /// </summary>
         public static void Start()
         {
-            timeGameSettings = BlackJackController.GameSettings.Clone();
+            timeGameSettings = BlackJackGame.GameSettings.Clone();
             GameSettingsMenuView.Draw(timeGameSettings);
 
             ConsoleKey consoleKey = ConsoleKey.None;
@@ -41,10 +41,20 @@ namespace ConsoleBlackJack.Controllers
                     timeGameSettings.SetStartPlayerMoney(timeGameSettings.StartPlayerMoney - 50);
                     needUpdatePage = true;
                 }
+                else if (consoleKey == ConsoleKey.RightArrow) // Увеличение количества колод в игре
+                {
+                    timeGameSettings.SetNumberOfDecks(timeGameSettings.NumberOfDecks + 1);
+                    needUpdatePage = true;
+                }
+                else if (consoleKey == ConsoleKey.LeftArrow) // Уменьшение количества колод в игре
+                {
+                    timeGameSettings.SetNumberOfDecks(timeGameSettings.NumberOfDecks - 1);
+                    needUpdatePage = true;
+                }
                 else if (consoleKey == ConsoleKey.S)
                 {
                     Console.Write("\b \b");
-                    BlackJackController.SetGameSettings(timeGameSettings);
+                    BlackJackGame.SetGameSettings(timeGameSettings);
                 }
                 else if (consoleKey == ConsoleKey.Q)
                 {

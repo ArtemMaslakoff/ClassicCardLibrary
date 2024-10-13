@@ -1,6 +1,6 @@
 ﻿using ClassicCardLibrary.Core.Cards;
 
-namespace ClassicCardLibraryConsoleTest
+namespace ConsoleBlackJack.Views
 {
     /// <summary>
     /// 
@@ -11,7 +11,7 @@ namespace ClassicCardLibraryConsoleTest
         /// 
         /// </summary>
         private static readonly Dictionary<CardSuit, char> cardSuitChars = new Dictionary<CardSuit, char>
-        { 
+        {
             { CardSuit.HEARTS, '♥' },
             { CardSuit.CLUBS, '♣' },
             { CardSuit.SPADES, '♠' },

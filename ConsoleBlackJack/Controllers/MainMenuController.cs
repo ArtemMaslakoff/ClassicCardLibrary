@@ -14,6 +14,7 @@ namespace ConsoleBlackJack.Controllers
         public static void Start()
         {
             MainMenuView.Draw();
+
             ConsoleKey consoleKey = ConsoleKey.None;
             bool fromOtherPage = false;
             while (true)
@@ -21,9 +22,6 @@ namespace ConsoleBlackJack.Controllers
                 consoleKey = Console.ReadKey().Key;
                 if (consoleKey == ConsoleKey.G)
                 {
-                    BlackJackController.NewPlayer();
-                    BlackJackController.Player.GiveMoney(BlackJackController.GameSettings.StartPlayerMoney);
-
                     GameController.Start();
                     fromOtherPage = true;
                 }

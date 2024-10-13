@@ -13,9 +13,19 @@ namespace ConsoleBlackJack.Controllers
         /// <summary>
         /// 
         /// </summary>
+        private static int timePlayerBet = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public static void Start()
         {
+            Player.NewPlayer();
+            Player.GiveMoney(BlackJackGame.GameSettings.StartPlayerMoney);
+            BlackJackGame.SetGameStage(GameStage.BET);
+
             GameView.Draw();
+            GameView.DrawBetWindow(timePlayerBet);
 
             ConsoleKey consoleKey = ConsoleKey.None;
             bool needUpdatePage = false;
@@ -23,12 +33,49 @@ namespace ConsoleBlackJack.Controllers
             {
                 consoleKey = Console.ReadKey().Key;
 
-                if (consoleKey == ConsoleKey.C)
+                if (BlackJackGame.GameStage == GameStage.GAMESTART)
                 {
-                    BlackJackController.Player.GiveCard(0, new Card(CardSuit.DIAMONDS, CardValue.EIGHT));
-                    needUpdatePage = true;
+
                 }
-                else if (consoleKey == ConsoleKey.Q)
+                else if (BlackJackGame.GameStage == GameStage.BET)
+                {
+                    GameView.DrawBetWindow(timePlayerBet);
+
+                    bool needToUpdateBetWindow = false;
+                    if (consoleKey == ConsoleKey.UpArrow)
+                    {
+                        timePlayerBet += 10;
+                        if (timePlayerBet > Player.Money) timePlayerBet = Player.Money;
+                        needToUpdateBetWindow = true;
+                    }
+                    else if (consoleKey == ConsoleKey.DownArrow)
+                    {
+                        timePlayerBet -= 10;
+                        if (timePlayerBet < 0) timePlayerBet = 0;
+                        needToUpdateBetWindow = true;
+                    }
+                    else if (consoleKey == ConsoleKey.B)
+                    {
+                        BlackJackGame.SetPlayerBet(timePlayerBet);
+                        BlackJackGame.SetGameStage(GameStage.STEP);
+                        GameView.Draw();
+                    }
+
+                    if (needToUpdateBetWindow)
+                    {
+                        GameView.DrawBetWindow(timePlayerBet);
+                    }
+                }
+                else if (BlackJackGame.GameStage == GameStage.STEP)
+                {
+
+                }
+                else if (BlackJackGame.GameStage == GameStage.GAMEFINISH)
+                {
+
+                }
+
+                if (consoleKey == ConsoleKey.Q)
                 {
                     return;
                 }
