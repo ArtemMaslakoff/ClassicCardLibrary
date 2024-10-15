@@ -25,6 +25,27 @@ namespace ClassicCardLibrary.Core
         }
 
         /// <summary>
+        /// Создание колоды из n классических колод в 36 карт
+        /// </summary>
+        /// <param name="decksCount"></param>
+        /// <returns></returns>
+        public static Deck CreateDeckFromN36(int decksCount)
+        {
+            Deck deck = new Deck();
+            for (int i = 0; i < decksCount; i++)
+            {
+                for (CardSuit cardSuit = CardSuit.DIAMONDS; cardSuit <= CardSuit.SPADES; cardSuit++)
+                {
+                    for (CardValue cardValue = CardValue.SIX; cardValue <= CardValue.A; cardValue++)
+                    {
+                        deck.GiveCard(new Card(cardSuit, cardValue));
+                    }
+                }
+            }
+            return deck;
+        }
+
+        /// <summary>
         /// Создание классической колоды в 52 карты
         /// </summary>
         /// <returns></returns>
@@ -36,6 +57,27 @@ namespace ClassicCardLibrary.Core
                 for (CardValue cardValue = CardValue.TWO; cardValue <= CardValue.A; cardValue++)
                 {
                     deck.GiveCard(new Card(cardSuit, cardValue));
+                }
+            }
+            return deck;
+        }
+
+        /// <summary>
+        /// Создание колоды из n классических колод в 52 карт
+        /// </summary>
+        /// <param name="decksCount"></param>
+        /// <returns></returns>
+        public static Deck CreateDeckFromN52(int decksCount)
+        {
+            Deck deck = new Deck();
+            for (int i = 0; i < decksCount; i++)
+            {
+                for (CardSuit cardSuit = CardSuit.DIAMONDS; cardSuit <= CardSuit.SPADES; cardSuit++)
+                {
+                    for (CardValue cardValue = CardValue.TWO; cardValue <= CardValue.A; cardValue++)
+                    {
+                        deck.GiveCard(new Card(cardSuit, cardValue));
+                    }
                 }
             }
             return deck;
@@ -57,6 +99,28 @@ namespace ClassicCardLibrary.Core
             }
             deck.GiveCard(new Joker());
             deck.GiveCard(new Joker());
+            return deck;
+        }
+
+        /// <summary>
+        /// Создание колоды из n классических колод в 54 карт
+        /// </summary>
+        /// <returns></returns>
+        public static Deck CreateDeckFromN54(int decksCount)
+        {
+            Deck deck = new Deck();
+            for (int i = 0; i < decksCount; i++)
+            {
+                for (CardSuit cardSuit = CardSuit.DIAMONDS; cardSuit <= CardSuit.SPADES; cardSuit++)
+                {
+                    for (CardValue cardValue = CardValue.TWO; cardValue <= CardValue.A; cardValue++)
+                    {
+                        deck.GiveCard(new Card(cardSuit, cardValue));
+                    }
+                }
+                deck.GiveCard(new Joker());
+                deck.GiveCard(new Joker());
+            }
             return deck;
         }
     }

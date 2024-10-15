@@ -1,10 +1,11 @@
-﻿using ConsoleBlackJack.Core;
+﻿using ConsoleBlackJack.Controllers;
+using ConsoleBlackJack.Core;
 using ConsoleBlackJack.View;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        BlackJackGame.Start();
+        MainMenuController.Start();
     }
 }

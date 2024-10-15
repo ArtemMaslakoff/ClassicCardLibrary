@@ -1,4 +1,6 @@
-﻿using ConsoleBlackJack.Controllers;
+﻿using ClassicCardLibrary.Core;
+using ClassicCardLibrary.Core.Cards;
+using ConsoleBlackJack.Controllers;
 
 namespace ConsoleBlackJack.Core
 {
@@ -22,17 +24,45 @@ namespace ConsoleBlackJack.Core
         /// </summary>
         public static int PlayerBet { get; private set; }
 
+        /// <summary>
+        /// Колода
+        /// </summary>
+        private static Deck deck;
+
+        public static List<BaseCard> DeallerCards { get; private set; }
+
         static BlackJackGame()
         {
             GameSettings = new GameSettings();
         }
 
         /// <summary>
-        /// Старт игры
+        /// Начать новую игру
         /// </summary>
-        public static void Start()
+        public static void StartNewGame()
         {
-            MainMenuController.Start();
+            Player.NewPlayer();
+            Player.GiveMoney(GameSettings.StartPlayerMoney);
+
+            PlayerBet = 0;
+
+            deck = DeckCreator.CreateDeckFromN52(GameSettings.NumberOfDecks);
+        }
+
+        /// <summary>
+        /// Выдать карту из колоды игроку
+        /// </summary>
+        public static void GiveCardToPlayer(int armId)
+        {
+            Player.GiveCard(armId, deck.TakeCard());
+        }
+
+        /// <summary>
+        /// Выдать карту из колоды диллеру
+        /// </summary>
+        public static void GiveCardToDealler()
+        {
+            DeallerCards.Add(deck.TakeCard());
         }
 
         /// <summary>
@@ -43,6 +73,7 @@ namespace ConsoleBlackJack.Core
             if (bet <= 0) throw new ArgumentOutOfRangeException();
             if (bet > Player.Money) throw new ArgumentOutOfRangeException();
             PlayerBet = bet;
+            Player.TakeMoney(bet);
         }
 
         /// <summary>
