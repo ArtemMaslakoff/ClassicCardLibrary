@@ -29,13 +29,30 @@ namespace ConsoleBlackJack.Core
         /// </summary>
         private static Deck deck;
 
+        /// <summary>
+        /// Карты диллера
+        /// </summary>
         public static List<BaseCard> DeallerCards { get; private set; }
+
+        /// <summary>
+        /// Возможен ли сплит
+        /// </summary>
+        public static bool IsPossibleSplit { get; set; }
+
+        /// <summary>
+        /// Игрок сплитанул
+        /// </summary>
+        public static bool PlayerSplited { get; set; }
 
         static BlackJackGame()
         {
             GameSettings = new GameSettings();
-        }
 
+            deck = new Deck();
+
+            DeallerCards = new List<BaseCard>();
+        }
+ 
         /// <summary>
         /// Начать новую игру
         /// </summary>
@@ -47,6 +64,14 @@ namespace ConsoleBlackJack.Core
             PlayerBet = 0;
 
             deck = DeckCreator.CreateDeckFromN52(GameSettings.NumberOfDecks);
+            DeckShaffler.ShaffleDeck(deck);
+
+            DeallerCards = new List<BaseCard>();
+
+            GameStage = GameStage.GAME_START;
+
+            IsPossibleSplit = false;
+            PlayerSplited = false;
         }
 
         public static void NextStep()
@@ -55,6 +80,25 @@ namespace ConsoleBlackJack.Core
             {
                 case GameStage.GAME_START:
                     GameStage = GameStage.BET;
+                    break;
+                case GameStage.BET:
+                    GameStage = GameStage.PLAYER_GIVE_START_CARDS;
+                    break;
+                case GameStage.PLAYER_GIVE_START_CARDS:
+                    GameStage = GameStage.DILLER_GIVE_START_CARDS;
+                    break;
+                case GameStage.DILLER_GIVE_START_CARDS:
+                    if (IsPossibleSplit) GameStage = GameStage.SPLIT;
+                    else GameStage = GameStage.STEP;
+                    break;
+                case GameStage.SPLIT:
+                    if (PlayerSplited) GameStage = GameStage.SPLIT_BET;
+                    else GameStage = GameStage.STEP;
+                    break;
+                case GameStage.SPLIT_BET:
+                    GameStage = GameStage.STEP;
+                    break;
+                case GameStage.STEP:
                     break;
             }
         }
@@ -111,6 +155,8 @@ namespace ConsoleBlackJack.Core
     {
         GAME_START,
         BET,
+        PLAYER_GIVE_START_CARDS,
+        DILLER_GIVE_START_CARDS,
         SPLIT,
         SPLIT_BET,
         STEP,

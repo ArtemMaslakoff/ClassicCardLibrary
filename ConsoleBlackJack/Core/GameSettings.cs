@@ -17,6 +17,12 @@ namespace ConsoleBlackJack.Core
         /// </summary>
         public int NumberOfDecks { get; private set; }
 
+        public GameSettings()
+        {
+            StartPlayerMoney = 500;
+            NumberOfDecks = 1;
+        }
+        
         /// <summary>
         /// Задать чтартовое количество денег игрока
         /// </summary>

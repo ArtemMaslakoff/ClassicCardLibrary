@@ -20,9 +20,28 @@
             CardSuit = cardSuit;
             CardValue = cardValue;
         }
+
+        /// <summary>
+        /// Строковое представление
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return CardSuit.ToString() + " " + CardValue.ToString();
+        }
+
+        /// <summary>
+        /// Сравнение
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object? obj)
+        {
+            if (obj == null) return false;
+            if (!(obj is Card)) return false;
+            if (this == obj) return true;
+            if (this.CardSuit == ((Card)obj).CardSuit && this.CardValue == ((Card)obj).CardValue) return true;
+            return false;
         }
     }
 

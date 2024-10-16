@@ -20,15 +20,14 @@ namespace ConsoleBlackJack.Controllers
         /// </summary>
         public static void Start()
         {
-            GameView.Draw();
             BlackJackGame.StartNewGame();
+            BlackJackGame.NextStep();
+            GameView.Draw();
 
             ConsoleKey consoleKey = ConsoleKey.None;
             bool needUpdatePage = false;
             while (true)
             {
-                consoleKey = Console.ReadKey().Key;
-
                 if (BlackJackGame.GameStage == GameStage.GAME_START)
                 {
                     BlackJackGame.StartNewGame();
@@ -37,6 +36,9 @@ namespace ConsoleBlackJack.Controllers
                 if (BlackJackGame.GameStage == GameStage.BET)
                 {
                     GameView.DrawBetWindow(timePlayerBet);
+                    GameView.DrawBETControl();
+
+                    consoleKey = Console.ReadKey().Key;
 
                     bool needToUpdateBetWindow = false;
                     if (consoleKey == ConsoleKey.UpArrow)
@@ -54,19 +56,58 @@ namespace ConsoleBlackJack.Controllers
                     else if (consoleKey == ConsoleKey.B)
                     {
                         BlackJackGame.SetPlayerBet(timePlayerBet);
-                        BlackJackGame.SetGameStage(GameStage.STEP);
+                        BlackJackGame.NextStep();
+
                         GameView.Draw();
                     }
+
+                    if (consoleKey == ConsoleKey.Q) return;
 
                     if (needToUpdateBetWindow)
                     {
                         GameView.DrawBetWindow(timePlayerBet);
                     }
                 }
-
-                if (consoleKey == ConsoleKey.Q)
+                if (BlackJackGame.GameStage == GameStage.PLAYER_GIVE_START_CARDS)
                 {
-                    return;
+                    BlackJackGame.GiveCardToPlayer(0);
+                    BlackJackGame.GiveCardToPlayer(0);
+                    BlackJackGame.NextStep();
+
+                    GameView.Update();
+                    GameView.DrawPlayerArms();
+                }
+                if (BlackJackGame.GameStage == GameStage.DILLER_GIVE_START_CARDS)
+                {
+                    BlackJackGame.GiveCardToDealler();
+                    BlackJackGame.GiveCardToDealler();
+                    BlackJackGame.NextStep();
+
+                    GameView.Update();
+                    GameView.DrawDeallerArm();
+                }
+                if (BlackJackGame.GameStage == GameStage.SPLIT)
+                {
+                    GameView.DrawSPLITControl();
+
+                    consoleKey = Console.ReadKey().Key;
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.SPLIT_BET)
+                {
+                    GameView.DrawSPLIT_BETControl();
+
+                    consoleKey = Console.ReadKey().Key;
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.STEP)
+                {
+                    GameView.DrawSTEPControl();
+                    consoleKey = Console.ReadKey().Key;
+
+                    if (consoleKey == ConsoleKey.Q) return;
                 }
 
                 if (needUpdatePage)

@@ -15,7 +15,6 @@ namespace ConsoleBlackJack.Views
             DrawBorder();
             DrawMoney();
             DrawNumberOfDecks();
-            DrawPlayerArms();
 
             Console.SetCursorPosition(0, 19);
         }
@@ -27,7 +26,6 @@ namespace ConsoleBlackJack.Views
         {
             DrawMoney();
             DrawNumberOfDecks();
-            DrawPlayerArms();
 
             Console.SetCursorPosition(0, 19);
         }
@@ -42,7 +40,7 @@ namespace ConsoleBlackJack.Views
             Console.WriteLine("╔══════════╦═══════════════════════════════════════════════════════╦═══╗");
             Console.WriteLine("║          ║                                                       ║   ║");
             Console.WriteLine("╠══════════╝                                                       ╚═══╣");
-            Console.WriteLine("║ Hands:                                                               ║");
+            Console.WriteLine("║ Hands:                                                      Dealler: ║");
             Console.WriteLine("║                                                                      ║");
             Console.WriteLine("║                                                                      ║");
             Console.WriteLine("║                                                                      ║");
@@ -55,7 +53,7 @@ namespace ConsoleBlackJack.Views
             Console.WriteLine("║                                                                      ║");
             Console.WriteLine("║                                                                      ║");
             Console.WriteLine("║                                                                      ║");
-            Console.WriteLine("╠══════════╗                                                           ║");
+            Console.WriteLine("╠══════════╦═══════════════════════════════════════════════════════════╣");
             Console.WriteLine("║ Exit (Q) ║                                                           ║");
             Console.WriteLine("╚══════════╩═══════════════════════════════════════════════════════════╝");
         }
@@ -77,7 +75,7 @@ namespace ConsoleBlackJack.Views
         /// <summary>
         /// Отрисовать количество денег игрока
         /// </summary>
-        private static void DrawMoney()
+        public static void DrawMoney()
         {
             Console.SetCursorPosition(2, 1);
             int moneyForDraw = Player.Money;
@@ -88,7 +86,7 @@ namespace ConsoleBlackJack.Views
         /// <summary>
         /// Отрисовать количество колод в игре
         /// </summary>
-        private static void DrawNumberOfDecks()
+        public static void DrawNumberOfDecks()
         {
             Console.SetCursorPosition(69, 1);
             int numberOfDecks = BlackJackGame.GameSettings.NumberOfDecks;
@@ -100,20 +98,69 @@ namespace ConsoleBlackJack.Views
         /// <summary>
         /// Отрисовка карт в руке игрока
         /// </summary>
-        private static void DrawPlayerArms()
+        public static void DrawPlayerArms()
         {
             Console.SetCursorPosition(1, 4);
-            foreach (var arm in Player.Arms)
+            for (int i = 0; i < Player.Arms.Count; i++)
             {
-                Console.Write("╔" + new string('═', arm.Value.Count * 4) + "╗" + BlackJackGame.PlayerBet.ToString());
+                Console.Write("╔═" + new string('═', Player.Arms[i].Count * 4) + "═╗");
+                Console.SetCursorPosition(1, 5);
+                Console.Write("║ ");
+                for (int j = 0; j < Player.Arms[i].Count; j++)
+                {
+                    Console.Write(ConsoleCardDrawer.CardToString(Player.Arms[i].Cards[j]));
+                }
+                Console.Write(" ║" + BlackJackGame.PlayerBet.ToString());
                 Console.SetCursorPosition(1, 6);
-                Console.Write("╚" + new string('═', arm.Value.Count * 4) + "╝");
+                Console.Write("╚═" + new string('═', Player.Arms[i].Count * 4) + "═╝");
             }
+        }
+
+        /// <summary>
+        /// Отрисовка карт диллера
+        /// </summary>
+        public static void DrawDeallerArm()
+        {
+            Console.SetCursorPosition(50, 4);
+            for (int i = 0; i < Player.Arms.Count; i++)
+            {
+                Console.Write("╔═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╗");
+                Console.SetCursorPosition(50, 5);
+                Console.Write("║ ");
+                for(int j = 0;j < BlackJackGame.DeallerCards.Count; j++)
+                {
+                    Console.Write(ConsoleCardDrawer.CardToString(BlackJackGame.DeallerCards[j]));
+                }
+                Console.Write(" ║");
+                Console.SetCursorPosition(50, 6);
+                Console.Write("╚═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╝");
+            }
+        }
+
+        public static void DrawBETControl()
+        {
+            Console.SetCursorPosition(13, 17);
+            Console.Write("+Bet (Arrow Up)       -Bet (Arrow Down)       Sve Bet (B)");
+        }
+        public static void DrawSPLITControl()
+        {
+            Console.SetCursorPosition(13, 17);
+            Console.Write("Split (Arrow Up)                      Cansel (Arrow Down)");
+        }
+        public static void DrawSPLIT_BETControl()
+        {
+            Console.SetCursorPosition(13, 17);
+            Console.Write("+Split Bet (Arrow Up) -Split Bet (Arrow Down) Sve Bet (B)");
+        }
+        public static void DrawSTEPControl()
+        {
+            Console.SetCursorPosition(13, 17);
+            Console.Write("Add Card (Arrow Up)                   Cansel (Arrow Down)");
         }
     }
 }
 //   ╔ ╦ ╗
 //
-//   ╠ ╬ ╣ ║ ═
+//   ╠ ╬ ╣ ║ ═ ✔ X ♛
 //
 //   ╚ ╩ ╝
