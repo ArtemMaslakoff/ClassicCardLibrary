@@ -49,6 +49,16 @@ namespace ConsoleBlackJack.Core
             deck = DeckCreator.CreateDeckFromN52(GameSettings.NumberOfDecks);
         }
 
+        public static void NextStep()
+        {
+            switch (GameStage)
+            {
+                case GameStage.GAME_START:
+                    GameStage = GameStage.BET;
+                    break;
+            }
+        }
+
         /// <summary>
         /// Выдать карту из колоды игроку
         /// </summary>
@@ -99,9 +109,17 @@ namespace ConsoleBlackJack.Core
     /// </summary>
     public enum GameStage
     {
-        GAMESTART,
+        GAME_START,
         BET,
+        SPLIT,
+        SPLIT_BET,
         STEP,
-        GAMEFINISH
+        PASS_STEP,
+        ADD_CARD_STEP,
+        HOLD_STEP,
+        DILLER_STEP,
+        PLAYER_WIN_STEP,
+        DILLER_WIN_STEP,
+        GAME_FINISH
     }
 }

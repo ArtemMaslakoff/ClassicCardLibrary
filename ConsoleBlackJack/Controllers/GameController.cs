@@ -20,12 +20,8 @@ namespace ConsoleBlackJack.Controllers
         /// </summary>
         public static void Start()
         {
-            Player.NewPlayer();
-            Player.GiveMoney(BlackJackGame.GameSettings.StartPlayerMoney);
-            BlackJackGame.SetGameStage(GameStage.BET);
-
             GameView.Draw();
-            GameView.DrawBetWindow(timePlayerBet);
+            BlackJackGame.StartNewGame();
 
             ConsoleKey consoleKey = ConsoleKey.None;
             bool needUpdatePage = false;
@@ -33,11 +29,12 @@ namespace ConsoleBlackJack.Controllers
             {
                 consoleKey = Console.ReadKey().Key;
 
-                if (BlackJackGame.GameStage == GameStage.GAMESTART)
+                if (BlackJackGame.GameStage == GameStage.GAME_START)
                 {
-
+                    BlackJackGame.StartNewGame();
+                    BlackJackGame.NextStep();
                 }
-                else if (BlackJackGame.GameStage == GameStage.BET)
+                if (BlackJackGame.GameStage == GameStage.BET)
                 {
                     GameView.DrawBetWindow(timePlayerBet);
 
@@ -65,14 +62,6 @@ namespace ConsoleBlackJack.Controllers
                     {
                         GameView.DrawBetWindow(timePlayerBet);
                     }
-                }
-                else if (BlackJackGame.GameStage == GameStage.STEP)
-                {
-
-                }
-                else if (BlackJackGame.GameStage == GameStage.GAMEFINISH)
-                {
-
                 }
 
                 if (consoleKey == ConsoleKey.Q)
