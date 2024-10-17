@@ -45,10 +45,10 @@ namespace ConsoleBlackJack.Views
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        public static string CardToString(BaseCard card)
+        public static string CardToString(Card card)
         {
             if (card == null) throw new ArgumentNullException();
-            if (card.GetType() == typeof(Joker)) return "[" + jokerChar + "]";
+            if (card.CardValue == CardValue.JOCKER) return "[" + jokerChar + "]";
             return "[" + cardValueChars[((Card)card).CardValue] + cardSuitChars[((Card)card).CardSuit] + "]";
         }
     }

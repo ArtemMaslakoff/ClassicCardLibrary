@@ -3,7 +3,7 @@
     /// <summary>
     /// Карта
     /// </summary>
-    public class Card : BaseCard
+    public class Card
     {
         /// <summary>
         /// Масть карты
@@ -17,8 +17,16 @@
 
         public Card(CardSuit cardSuit, CardValue cardValue)
         {
-            CardSuit = cardSuit;
-            CardValue = cardValue;
+            if (cardSuit == CardSuit.JOCKER || cardValue == CardValue.JOCKER)
+            {
+                CardSuit = CardSuit.JOCKER;
+                CardValue = CardValue.JOCKER;
+            }
+            else
+            {
+                CardSuit = cardSuit;
+                CardValue = cardValue;
+            }
         }
 
         /// <summary>
@@ -53,7 +61,8 @@
         DIAMONDS = 1, // Бубы
         HEARTS = 2, // Черви
         CLUBS = 3, // Крести
-        SPADES = 4 // Пики
+        SPADES = 4, // Пики
+        JOCKER
     }
 
     /// <summary>
@@ -73,6 +82,7 @@
         J = 11,
         Q = 12,
         K = 13,
-        A = 14
+        A = 14,
+        JOCKER
     }
 }

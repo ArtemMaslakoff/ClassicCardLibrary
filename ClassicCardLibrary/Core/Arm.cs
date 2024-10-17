@@ -11,7 +11,7 @@ namespace ClassicCardLibrary.Core
         /// <summary>
         /// Карты в руке
         /// </summary>
-        public List<BaseCard> Cards { get; private set; }
+        public List<Card> Cards { get; private set; }
 
         /// <summary>
         /// Количество карт в руке
@@ -20,14 +20,14 @@ namespace ClassicCardLibrary.Core
 
         public Arm()
         {
-            Cards = new List<BaseCard>();
+            Cards = new List<Card>();
         }
 
         /// <summary>
         /// Добавление карты в руку
         /// </summary>
         /// <param name="card"></param>
-        public void GiveCard(BaseCard card)
+        public void GiveCard(Card card)
         {
             Cards.Add(card);
         }
@@ -37,10 +37,10 @@ namespace ClassicCardLibrary.Core
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public BaseCard TakeCard()
+        public Card TakeCard()
         {
             if (Cards.Count == 0) throw new Exception("Arm is empty");
-            BaseCard card = Cards[Cards.Count - 1];
+            Card card = Cards[Cards.Count - 1];
             Cards.RemoveAt(Cards.Count - 1);
             return card;
         }

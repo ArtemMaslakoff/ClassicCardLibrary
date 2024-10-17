@@ -96,24 +96,39 @@ namespace ConsoleBlackJack.Views
         }
 
         /// <summary>
-        /// Отрисовка карт в руке игрока
+        /// Отрисовка карт в основной руке игрока
         /// </summary>
-        public static void DrawPlayerArms()
+        public static void DrawPlayerArm()
         {
             Console.SetCursorPosition(1, 4);
-            for (int i = 0; i < Player.Arms.Count; i++)
+            Console.Write("╔═" + new string('═', Player.Arm.Count * 4) + "═╗");
+            Console.SetCursorPosition(1, 5);
+            Console.Write("║ ");
+            for (int j = 0; j < Player.Arm.Count; j++)
             {
-                Console.Write("╔═" + new string('═', Player.Arms[i].Count * 4) + "═╗");
-                Console.SetCursorPosition(1, 5);
-                Console.Write("║ ");
-                for (int j = 0; j < Player.Arms[i].Count; j++)
-                {
-                    Console.Write(ConsoleCardDrawer.CardToString(Player.Arms[i].Cards[j]));
-                }
-                Console.Write(" ║" + BlackJackGame.PlayerBet.ToString());
-                Console.SetCursorPosition(1, 6);
-                Console.Write("╚═" + new string('═', Player.Arms[i].Count * 4) + "═╝");
+                Console.Write(ConsoleCardDrawer.CardToString(Player.Arm.Cards[j]));
             }
+            Console.Write(" ║" + BlackJackGame.PlayerArmBet.ToString());
+            Console.SetCursorPosition(1, 6);
+            Console.Write("╚═" + new string('═', Player.Arm.Count * 4) + "═╝");
+        }
+
+        /// <summary>
+        /// Отрисовка карт в сплитованной руке игрока
+        /// </summary>
+        public static void DrawPlayerSplitArm()
+        {
+            Console.SetCursorPosition(1, 8);
+            Console.Write("╔═" + new string('═', Player.SplitArm.Count * 4) + "═╗");
+            Console.SetCursorPosition(1, 9);
+            Console.Write("║ ");
+            for (int j = 0; j < Player.SplitArm.Count; j++)
+            {
+                Console.Write(ConsoleCardDrawer.CardToString(Player.SplitArm.Cards[j]));
+            }
+            Console.Write(" ║" + BlackJackGame.PlayerSplitArmBet.ToString());
+            Console.SetCursorPosition(1, 10);
+            Console.Write("╚═" + new string('═', Player.SplitArm.Count * 4) + "═╝");
         }
 
         /// <summary>
@@ -122,19 +137,16 @@ namespace ConsoleBlackJack.Views
         public static void DrawDeallerArm()
         {
             Console.SetCursorPosition(50, 4);
-            for (int i = 0; i < Player.Arms.Count; i++)
+            Console.Write("╔═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╗");
+            Console.SetCursorPosition(50, 5);
+            Console.Write("║ ");
+            for (int j = 0; j < BlackJackGame.DeallerCards.Count; j++)
             {
-                Console.Write("╔═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╗");
-                Console.SetCursorPosition(50, 5);
-                Console.Write("║ ");
-                for(int j = 0;j < BlackJackGame.DeallerCards.Count; j++)
-                {
-                    Console.Write(ConsoleCardDrawer.CardToString(BlackJackGame.DeallerCards[j]));
-                }
-                Console.Write(" ║");
-                Console.SetCursorPosition(50, 6);
-                Console.Write("╚═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╝");
+                Console.Write(ConsoleCardDrawer.CardToString(BlackJackGame.DeallerCards[j]));
             }
+            Console.Write(" ║");
+            Console.SetCursorPosition(50, 6);
+            Console.Write("╚═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╝");
         }
 
         public static void DrawBETControl()
@@ -147,11 +159,11 @@ namespace ConsoleBlackJack.Views
             Console.SetCursorPosition(13, 17);
             Console.Write("Split (Arrow Up)                      Cansel (Arrow Down)");
         }
-        public static void DrawSPLIT_BETControl()
-        {
-            Console.SetCursorPosition(13, 17);
-            Console.Write("+Split Bet (Arrow Up) -Split Bet (Arrow Down) Sve Bet (B)");
-        }
+        //public static void DrawSPLIT_BETControl()
+        //{
+        //    Console.SetCursorPosition(13, 17);
+        //    Console.Write("+Split Bet (Arrow Up) -Split Bet (Arrow Down) Sve Bet (B)");
+        //}
         public static void DrawSTEPControl()
         {
             Console.SetCursorPosition(13, 17);

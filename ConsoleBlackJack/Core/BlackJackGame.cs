@@ -20,9 +20,14 @@ namespace ConsoleBlackJack.Core
         public static GameStage GameStage { get; private set; }
 
         /// <summary>
-        /// Ставка игрока
+        /// Ставка игрока основной руки
         /// </summary>
-        public static int PlayerBet { get; private set; }
+        public static int PlayerArmBet { get; private set; }
+
+        /// <summary>
+        /// Ставка игрока сплитованной руки
+        /// </summary>
+        public static int PlayerSplitArmBet { get; private set; }
 
         /// <summary>
         /// Колода
@@ -32,7 +37,7 @@ namespace ConsoleBlackJack.Core
         /// <summary>
         /// Карты диллера
         /// </summary>
-        public static List<BaseCard> DeallerCards { get; private set; }
+        public static List<Card> DeallerCards { get; private set; }
 
         /// <summary>
         /// Возможен ли сплит
@@ -50,7 +55,7 @@ namespace ConsoleBlackJack.Core
 
             deck = new Deck();
 
-            DeallerCards = new List<BaseCard>();
+            DeallerCards = new List<Card>();
         }
  
         /// <summary>
@@ -61,12 +66,13 @@ namespace ConsoleBlackJack.Core
             Player.NewPlayer();
             Player.GiveMoney(GameSettings.StartPlayerMoney);
 
-            PlayerBet = 0;
+            PlayerArmBet = 0;
+            PlayerSplitArmBet = 0;
 
             deck = DeckCreator.CreateDeckFromN52(GameSettings.NumberOfDecks);
             DeckShaffler.ShaffleDeck(deck);
 
-            DeallerCards = new List<BaseCard>();
+            DeallerCards = new List<Card>();
 
             GameStage = GameStage.GAME_START;
 
@@ -103,12 +109,28 @@ namespace ConsoleBlackJack.Core
             }
         }
 
+        public static void SplitPlayerArm()
+        {
+            Player.SplitArmGiveCard(Player.ArmTakeCard());
+
+            Player.TakeMoney(PlayerArmBet);
+            PlayerSplitArmBet = PlayerArmBet;
+        }
+
         /// <summary>
         /// Выдать карту из колоды игроку
         /// </summary>
-        public static void GiveCardToPlayer(int armId)
+        public static void GiveCardToPlayerArm()
         {
-            Player.GiveCard(armId, deck.TakeCard());
+            Player.ArmGiveCard(deck.TakeCard());
+        }
+
+        /// <summary>
+        /// Выдать карту из колоды игроку
+        /// </summary>
+        public static void GiveCardToPlayerSplitArm()
+        {
+            Player.SplitArmGiveCard(deck.TakeCard());
         }
 
         /// <summary>
@@ -126,7 +148,7 @@ namespace ConsoleBlackJack.Core
         {
             if (bet <= 0) throw new ArgumentOutOfRangeException();
             if (bet > Player.Money) throw new ArgumentOutOfRangeException();
-            PlayerBet = bet;
+            PlayerArmBet = bet;
             Player.TakeMoney(bet);
         }
 

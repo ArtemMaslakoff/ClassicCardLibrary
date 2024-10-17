@@ -17,7 +17,7 @@ namespace ClassicCardLibrary.Core
         /// </summary>
         public static void ShaffleDeck(Deck deck)
         {
-            BaseCard[] cards = new Card[deck.Count()];
+            Card[] cards = new Card[deck.Count()];
             for (int i = 0; i < cards.Length;i++)
             {
                 cards[i] = deck.TakeCard();
@@ -25,7 +25,7 @@ namespace ClassicCardLibrary.Core
             for (int i = 0; i < cards.Length;i++)
             {
                 int splitterPosition = random.Next(cards.Count());
-                BaseCard timeCard = cards[splitterPosition];
+                Card timeCard = cards[splitterPosition];
                 cards[splitterPosition] = cards[i];
                 cards[i] = timeCard;
             }

@@ -16,12 +16,14 @@ namespace ConsoleBlackJack.Core
         /// <summary>
         /// Рука игрока
         /// </summary>
-        public static Dictionary<int, Arm> Arms { get; private set; }
+        public static Arm Arm { get; private set; }
+        public static Arm SplitArm { get; private set; }
 
         static Player()
         {
             Money = 0;
-            Arms = new Dictionary<int, Arm>() {{ 0, new Arm() }};
+            Arm = new Arm();
+            SplitArm = new Arm();
         }
         
         /// <summary>
@@ -30,7 +32,8 @@ namespace ConsoleBlackJack.Core
         public static void NewPlayer()
         {
             Money = 0;
-            Arms = new Dictionary<int, Arm>() { { 0, new Arm() } };
+            Arm = new Arm();
+            SplitArm = new Arm();
         }
 
         /// <summary>
@@ -55,28 +58,55 @@ namespace ConsoleBlackJack.Core
         }
         
         /// <summary>
-        /// Добавление карты игроку
+        /// Добавление карты в основную руку
         /// </summary>
         /// <param name="card"></param>
-        public static void GiveCard(int armId, BaseCard card)
+        public static void ArmGiveCard(Card card)
         {
-            if (armId < 0 || armId >= Arms.Count) return;
-            Arms[armId].GiveCard(card);
+            if (card == null) return;
+            Arm.GiveCard(card);
+        }
+
+        /// <summary>
+        /// Добавление карты в сплитованную руку
+        /// </summary>
+        /// <param name="card"></param>
+        public static void SplitArmGiveCard(Card card)
+        {
+            if (card == null) return;
+            SplitArm.GiveCard(card);
+        }
+
+        /// <summary>
+        /// Изъятие карты из основной руки игрока
+        /// </summary>
+        public static Card ArmTakeCard()
+        {
+            return Arm.TakeCard();
+        }
+
+        /// <summary>
+        /// Изъятие карты из сплитованной руки игрока
+        /// </summary>
+        public static Card SplitArmTakeCard()
+        {
+            return SplitArm.TakeCard();
         }
 
         /// <summary>
         /// Изъятие карт игрока
         /// </summary>
         /// <param name="card"></param>
-        public static List<BaseCard> TakeCards()
+        public static List<Card> TakeCards()
         {
-            List<BaseCard> cards = new List<BaseCard>();
-            foreach (var arm in Arms)
+            List<Card> cards = new List<Card>();
+            while (Arm.Count > 0)
             {
-                while (arm.Value.Count > 0)
-                {
-                    cards.Add(arm.Value.TakeCard());
-                }
+                cards.Add(Arm.TakeCard());
+            }
+            while (SplitArm.Count > 0)
+            {
+                cards.Add(SplitArm.TakeCard());
             }
             return cards;
         }

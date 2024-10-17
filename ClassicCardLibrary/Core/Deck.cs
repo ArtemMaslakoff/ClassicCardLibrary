@@ -10,18 +10,18 @@ namespace ClassicCardLibrary.Core
         /// <summary>
         /// Карты в колоде
         /// </summary>
-        private List<BaseCard> cards;
+        private List<Card> cards;
 
         public Deck()
         {
-            cards = new List<BaseCard>();    
+            cards = new List<Card>();    
         }
 
         /// <summary>
         /// Добавление карты в колоду
         /// </summary>
         /// <param name="card"></param>
-        public void GiveCard(BaseCard card)
+        public void GiveCard(Card card)
         {
             cards.Add(card);
         }
@@ -31,10 +31,10 @@ namespace ClassicCardLibrary.Core
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public BaseCard TakeCard()
+        public Card TakeCard()
         {
             if (cards.Count == 0) throw new Exception("Deck is empty");
-            BaseCard card = cards[cards.Count - 1];
+            Card card = cards[cards.Count - 1];
             cards.RemoveAt(cards.Count - 1);
             return card;
         }

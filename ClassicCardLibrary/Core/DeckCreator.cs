@@ -97,8 +97,8 @@ namespace ClassicCardLibrary.Core
                     deck.GiveCard(new Card(cardSuit, cardValue));
                 }
             }
-            deck.GiveCard(new Joker());
-            deck.GiveCard(new Joker());
+            deck.GiveCard(new Card(CardSuit.JOCKER, CardValue.JOCKER));
+            deck.GiveCard(new Card(CardSuit.JOCKER, CardValue.JOCKER));
             return deck;
         }
 
@@ -118,8 +118,8 @@ namespace ClassicCardLibrary.Core
                         deck.GiveCard(new Card(cardSuit, cardValue));
                     }
                 }
-                deck.GiveCard(new Joker());
-                deck.GiveCard(new Joker());
+                deck.GiveCard(new Card(CardSuit.JOCKER, CardValue.JOCKER));
+                deck.GiveCard(new Card(CardSuit.JOCKER, CardValue.JOCKER));
             }
             return deck;
         }
