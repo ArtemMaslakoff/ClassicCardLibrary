@@ -30,6 +30,16 @@ namespace ConsoleBlackJack.Core
         public static int PlayerSplitArmBet { get; private set; }
 
         /// <summary>
+        /// Остановился ли игрок брять карты в руку
+        /// </summary>
+        public static bool PlayerArmStopped { get; set; }
+
+        /// <summary>
+        /// Остановился ли игрок брять карты в сплитованную руку
+        /// </summary>
+        public static bool PlayerSplitArmStopped { get; set; }
+
+        /// <summary>
         /// Колода
         /// </summary>
         private static Deck deck;
@@ -78,6 +88,9 @@ namespace ConsoleBlackJack.Core
 
             IsPossibleSplit = false;
             PlayerSplited = false;
+
+            PlayerArmStopped = false;
+            PlayerSplitArmStopped = false;
         }
 
         public static void NextStep()
@@ -95,20 +108,52 @@ namespace ConsoleBlackJack.Core
                     break;
                 case GameStage.DILLER_GIVE_START_CARDS:
                     if (IsPossibleSplit) GameStage = GameStage.SPLIT;
-                    else GameStage = GameStage.STEP;
+                    else GameStage = GameStage.ARM_STEP;
                     break;
                 case GameStage.SPLIT:
                     if (PlayerSplited) GameStage = GameStage.SPLIT_BET;
-                    else GameStage = GameStage.STEP;
+                    else GameStage = GameStage.ARM_STEP;
                     break;
                 case GameStage.SPLIT_BET:
-                    GameStage = GameStage.STEP;
+                    GameStage = GameStage.ARM_STEP;
                     break;
-                case GameStage.STEP:
+                case GameStage.ARM_STEP:
+                    if (CheckPlayerArmSumUpper21()) GameStage = GameStage.PLAYER_LOSE_ARM_STEP;
+                    else if (GetPlayerArmSum() == 21) GameStage = GameStage.PLAYER_WIN_ARM_STEP;
+                    else if (PlayerArmStopped)
+                    {
+                        if (PlayerSplited == true) GameStage = GameStage.SPLIT_ARM_STEP;
+                        else GameStage = GameStage.DILLER_STEP;
+                    }
                     break;
+                case GameStage.PLAYER_LOSE_ARM_STEP:
+                    if (PlayerSplited == true) GameStage = GameStage.SPLIT_ARM_STEP;
+                    else GameStage = GameStage.DILLER_STEP;
+                    break;
+                case GameStage.PLAYER_WIN_ARM_STEP:
+                    if (PlayerSplited == true) GameStage = GameStage.SPLIT_ARM_STEP;
+                    else GameStage = GameStage.DILLER_STEP;
+                    break;
+                case GameStage.SPLIT_ARM_STEP:
+                    if (CheckPlayerSplitArmSumUpper21()) GameStage = GameStage.PLAYER_LOSE_SPLIT_ARM_STEP;
+                    else if (GetPlayerSplitArmSum() == 21) GameStage = GameStage.PLAYER_WIN_SPLIT_ARM_STEP;
+                    else if (PlayerSplitArmStopped) GameStage = GameStage.DILLER_STEP;
+                    break;
+                case GameStage.PLAYER_LOSE_SPLIT_ARM_STEP:
+                    GameStage = GameStage.DILLER_STEP;
+                    break;
+                case GameStage.PLAYER_WIN_SPLIT_ARM_STEP:
+                    GameStage = GameStage.DILLER_STEP;
+                    break;
+                case GameStage.DILLER_STEP:
+                    break;
+
             }
         }
 
+        /// <summary>
+		/// Сплитануть руку игрока
+        /// </summary>
         public static void SplitPlayerArm()
         {
             Player.SplitArmGiveCard(Player.ArmTakeCard());
@@ -117,6 +162,25 @@ namespace ConsoleBlackJack.Core
             PlayerSplitArmBet = PlayerArmBet;
         }
 
+        /// <summary>
+        /// Проверить руку игрока на 21
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckPlayerArmSumUpper21()
+        {
+            if (GetPlayerArmSum() > 21) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Проверить сплитованную руку игрока на 21
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckPlayerSplitArmSumUpper21()
+        {
+            if (GetPlayerSplitArmSum() > 21) return true;
+            return false;
+        }
         /// <summary>
         /// Выдать карту из колоды игроку
         /// </summary>
@@ -168,6 +232,82 @@ namespace ConsoleBlackJack.Core
         {
             GameSettings = gameSettings.Clone();
         }
+
+        /// <summary>
+        /// Сумма карт в руке
+        /// </summary>
+        /// <returns></returns>
+        public static int GetPlayerArmSum()
+        {
+            int result = 0;
+            int ACount = 0;
+            for (int i = 0;i < Player.Arm.Count; i++)
+            {
+                if (Player.Arm.Cards[i].CardValue == CardValue.J ||
+                    Player.Arm.Cards[i].CardValue == CardValue.Q ||
+                    Player.Arm.Cards[i].CardValue == CardValue.K)
+                {
+                    result += 10;
+                }
+                else if (Player.Arm.Cards[i].CardValue == CardValue.A)
+                {
+                    ACount++;
+                }
+                else
+                {
+                    result += (int)Player.Arm.Cards[i].CardValue;
+                }
+            }
+            result += ACount;
+            for (int i = 0; i < ACount; i++)
+            {
+                result += 10;
+                if (result > 21)
+                {
+                    result -= 10;
+                    return result;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Сумма карт в сплитованной руке
+        /// </summary>
+        /// <returns></returns>
+        public static int GetPlayerSplitArmSum()
+        {
+            int result = 0;
+            int ACount = 0;
+            for (int i = 0; i < Player.SplitArm.Count; i++)
+            {
+                if (Player.SplitArm.Cards[i].CardValue == CardValue.J ||
+                    Player.SplitArm.Cards[i].CardValue == CardValue.Q ||
+                    Player.SplitArm.Cards[i].CardValue == CardValue.K)
+                {
+                    result += 10;
+                }
+                else if (Player.SplitArm.Cards[i].CardValue == CardValue.A)
+                {
+                    ACount++;
+                }
+                else
+                {
+                    result += (int)Player.SplitArm.Cards[i].CardValue;
+                }
+            }
+            result += ACount;
+            for (int i = 0; i < ACount; i++)
+            {
+                result += 10;
+                if (result > 21)
+                {
+                    result -= 10;
+                    return result;
+                }
+            }
+            return result;
+        }
     }
 
     /// <summary>
@@ -181,13 +321,13 @@ namespace ConsoleBlackJack.Core
         DILLER_GIVE_START_CARDS,
         SPLIT,
         SPLIT_BET,
-        STEP,
-        PASS_STEP,
-        ADD_CARD_STEP,
-        HOLD_STEP,
+        ARM_STEP,
+        SPLIT_ARM_STEP,
+        PLAYER_WIN_ARM_STEP,
+        PLAYER_LOSE_ARM_STEP,
+        PLAYER_WIN_SPLIT_ARM_STEP,
+        PLAYER_LOSE_SPLIT_ARM_STEP,
         DILLER_STEP,
-        PLAYER_WIN_STEP,
-        DILLER_WIN_STEP,
         GAME_FINISH
     }
 }

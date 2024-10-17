@@ -101,16 +101,16 @@ namespace ConsoleBlackJack.Views
         public static void DrawPlayerArm()
         {
             Console.SetCursorPosition(1, 4);
-            Console.Write("╔═" + new string('═', Player.Arm.Count * 4) + "═╗");
+            Console.Write("╔═" + new string('═', Player.Arm.Count * 4) + "═╗" + BlackJackGame.PlayerArmBet.ToString());
             Console.SetCursorPosition(1, 5);
             Console.Write("║ ");
             for (int j = 0; j < Player.Arm.Count; j++)
             {
                 Console.Write(ConsoleCardDrawer.CardToString(Player.Arm.Cards[j]));
             }
-            Console.Write(" ║" + BlackJackGame.PlayerArmBet.ToString());
+            Console.Write(" ║");
             Console.SetCursorPosition(1, 6);
-            Console.Write("╚═" + new string('═', Player.Arm.Count * 4) + "═╝");
+            Console.Write("╚═" + new string('═', Player.Arm.Count * 4) + "═╝" + BlackJackGame.GetPlayerArmSum());
         }
 
         /// <summary>
@@ -119,16 +119,16 @@ namespace ConsoleBlackJack.Views
         public static void DrawPlayerSplitArm()
         {
             Console.SetCursorPosition(1, 8);
-            Console.Write("╔═" + new string('═', Player.SplitArm.Count * 4) + "═╗");
+            Console.Write("╔═" + new string('═', Player.SplitArm.Count * 4) + "═╗" + BlackJackGame.PlayerSplitArmBet.ToString());
             Console.SetCursorPosition(1, 9);
             Console.Write("║ ");
             for (int j = 0; j < Player.SplitArm.Count; j++)
             {
                 Console.Write(ConsoleCardDrawer.CardToString(Player.SplitArm.Cards[j]));
             }
-            Console.Write(" ║" + BlackJackGame.PlayerSplitArmBet.ToString());
+            Console.Write(" ║");
             Console.SetCursorPosition(1, 10);
-            Console.Write("╚═" + new string('═', Player.SplitArm.Count * 4) + "═╝");
+            Console.Write("╚═" + new string('═', Player.SplitArm.Count * 4) + "═╝" + BlackJackGame.GetPlayerSplitArmSum());
         }
 
         /// <summary>

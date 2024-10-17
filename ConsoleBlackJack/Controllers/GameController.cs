@@ -119,7 +119,7 @@ namespace ConsoleBlackJack.Controllers
                 {
                     BlackJackGame.NextStep();
                 }
-                if (BlackJackGame.GameStage == GameStage.STEP)
+                if (BlackJackGame.GameStage == GameStage.ARM_STEP)
                 {
                     GameView.DrawSTEPControl();
                     consoleKey = Console.ReadKey().Key;
@@ -133,9 +133,65 @@ namespace ConsoleBlackJack.Controllers
                     }
                     else if (consoleKey == ConsoleKey.DownArrow)
                     {
+                        BlackJackGame.PlayerArmStopped = true;
+                        BlackJackGame.NextStep();
 
+                        GameView.Update();
+                        GameView.DrawPlayerArm();
                     }
 
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.PLAYER_LOSE_ARM_STEP)
+                {
+                    BlackJackGame.NextStep();
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.PLAYER_WIN_ARM_STEP)
+                {
+                    BlackJackGame.NextStep();
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.SPLIT_ARM_STEP && BlackJackGame.PlayerSplited == true)
+                {
+                    GameView.DrawSTEPControl();
+                    consoleKey = Console.ReadKey().Key;
+
+                    if (consoleKey == ConsoleKey.UpArrow)
+                    {
+                        BlackJackGame.GiveCardToPlayerSplitArm();
+
+                        GameView.Update();
+                        GameView.DrawPlayerSplitArm();
+                    }
+                    else if (consoleKey == ConsoleKey.DownArrow)
+                    {
+                        BlackJackGame.PlayerSplitArmStopped = true;
+                        BlackJackGame.NextStep();
+
+                        GameView.Update();
+                        GameView.DrawPlayerSplitArm();
+                    }
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.PLAYER_LOSE_SPLIT_ARM_STEP)
+                {
+                    BlackJackGame.NextStep();
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.PLAYER_WIN_SPLIT_ARM_STEP)
+                {
+                    BlackJackGame.NextStep();
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.DILLER_STEP)
+                {
+                    consoleKey = Console.ReadKey().Key;
                     if (consoleKey == ConsoleKey.Q) return;
                 }
 

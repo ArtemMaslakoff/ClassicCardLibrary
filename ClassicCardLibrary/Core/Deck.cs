@@ -33,7 +33,7 @@ namespace ClassicCardLibrary.Core
         /// <exception cref="Exception"></exception>
         public Card TakeCard()
         {
-            if (cards.Count == 0) throw new Exception("Deck is empty");
+            if (cards.Count == 0)   throw new Exception("Deck is empty");
             Card card = cards[cards.Count - 1];
             cards.RemoveAt(cards.Count - 1);
             return card;
