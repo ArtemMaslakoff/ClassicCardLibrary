@@ -1,6 +1,7 @@
 ﻿using ClassicCardLibrary.Core;
 using ClassicCardLibrary.Core.Cards;
 using ConsoleBlackJack.Controllers;
+using System.ComponentModel.Design;
 
 namespace ConsoleBlackJack.Core
 {
@@ -9,10 +10,7 @@ namespace ConsoleBlackJack.Core
     /// </summary>
     public static class BlackJackGame
     {
-        /// <summary>
-        /// Настройки игры
-        /// </summary>
-        public static GameSettings GameSettings { get; private set; }
+        public static GameSettings GameSettings { get; set; }
 
         /// <summary>
         /// Нынешний этап игры
@@ -47,7 +45,7 @@ namespace ConsoleBlackJack.Core
         /// <summary>
         /// Карты диллера
         /// </summary>
-        public static List<Card> DeallerCards { get; private set; }
+        public static List<Card> DealerCards { get; private set; }
 
         /// <summary>
         /// Возможен ли сплит
@@ -59,13 +57,15 @@ namespace ConsoleBlackJack.Core
         /// </summary>
         public static bool PlayerSplited { get; set; }
 
+        public static bool IsDealerStopped { get; set; }
+
         static BlackJackGame()
         {
             GameSettings = new GameSettings();
 
             deck = new Deck();
 
-            DeallerCards = new List<Card>();
+            DealerCards = new List<Card>();
         }
  
         /// <summary>
@@ -73,8 +73,6 @@ namespace ConsoleBlackJack.Core
         /// </summary>
         public static void StartNewGame()
         {
-            Player.NewPlayer();
-            Player.GiveMoney(GameSettings.StartPlayerMoney);
 
             PlayerArmBet = 0;
             PlayerSplitArmBet = 0;
@@ -82,15 +80,19 @@ namespace ConsoleBlackJack.Core
             deck = DeckCreator.CreateDeckFromN52(GameSettings.NumberOfDecks);
             DeckShaffler.ShaffleDeck(deck);
 
-            DeallerCards = new List<Card>();
+            DealerCards = new List<Card>();
 
             GameStage = GameStage.GAME_START;
+
+            Player.ClearArms();
 
             IsPossibleSplit = false;
             PlayerSplited = false;
 
             PlayerArmStopped = false;
             PlayerSplitArmStopped = false;
+
+            IsDealerStopped = false;
         }
 
         public static void NextStep()
@@ -104,9 +106,9 @@ namespace ConsoleBlackJack.Core
                     GameStage = GameStage.PLAYER_GIVE_START_CARDS;
                     break;
                 case GameStage.PLAYER_GIVE_START_CARDS:
-                    GameStage = GameStage.DILLER_GIVE_START_CARDS;
+                    GameStage = GameStage.DEALER_GIVE_START_CARDS;
                     break;
-                case GameStage.DILLER_GIVE_START_CARDS:
+                case GameStage.DEALER_GIVE_START_CARDS:
                     if (IsPossibleSplit) GameStage = GameStage.SPLIT;
                     else GameStage = GameStage.ARM_STEP;
                     break;
@@ -123,31 +125,63 @@ namespace ConsoleBlackJack.Core
                     else if (PlayerArmStopped)
                     {
                         if (PlayerSplited == true) GameStage = GameStage.SPLIT_ARM_STEP;
-                        else GameStage = GameStage.DILLER_STEP;
+                        else GameStage = GameStage.DEALER_STEP;
                     }
                     break;
                 case GameStage.PLAYER_LOSE_ARM_STEP:
                     if (PlayerSplited == true) GameStage = GameStage.SPLIT_ARM_STEP;
-                    else GameStage = GameStage.DILLER_STEP;
+                    else GameStage = GameStage.DEALER_STEP;
                     break;
                 case GameStage.PLAYER_WIN_ARM_STEP:
                     if (PlayerSplited == true) GameStage = GameStage.SPLIT_ARM_STEP;
-                    else GameStage = GameStage.DILLER_STEP;
+                    else GameStage = GameStage.DEALER_STEP;
                     break;
                 case GameStage.SPLIT_ARM_STEP:
                     if (CheckPlayerSplitArmSumUpper21()) GameStage = GameStage.PLAYER_LOSE_SPLIT_ARM_STEP;
                     else if (GetPlayerSplitArmSum() == 21) GameStage = GameStage.PLAYER_WIN_SPLIT_ARM_STEP;
-                    else if (PlayerSplitArmStopped) GameStage = GameStage.DILLER_STEP;
+                    else if (PlayerSplitArmStopped) GameStage = GameStage.DEALER_STEP;
                     break;
                 case GameStage.PLAYER_LOSE_SPLIT_ARM_STEP:
-                    GameStage = GameStage.DILLER_STEP;
+                    GameStage = GameStage.DEALER_STEP;
                     break;
                 case GameStage.PLAYER_WIN_SPLIT_ARM_STEP:
-                    GameStage = GameStage.DILLER_STEP;
+                    GameStage = GameStage.DEALER_STEP;
                     break;
-                case GameStage.DILLER_STEP:
+                case GameStage.DEALER_STEP:
+                    if (GetDealerArmSum() >= 17) GameStage = GameStage.GAME_FINISH;
                     break;
+                case GameStage.GAME_FINISH:
+                    GameStage = GameStage.GAME_START;
+                    break;
+            }
+        }
 
+        /// <summary>
+        /// Подведение итогов игры
+        /// </summary>
+        public static void CalculateResult()
+        {
+            int playerArmSum = GetPlayerArmSum();
+            int playerSplitArmSum = GetPlayerSplitArmSum();
+            int dealerArmSum = GetDealerArmSum();
+
+            if (dealerArmSum > 21)
+            {
+                if (playerArmSum <= 21) Player.GiveMoney((int)(PlayerArmBet * 1.5));
+                if (playerSplitArmSum <= 21) Player.GiveMoney((int)(PlayerSplitArmBet * 1.5));
+            }
+            else if (dealerArmSum == 21)
+            {
+                if (playerArmSum == 21) Player.GiveMoney(PlayerArmBet);
+                if (playerSplitArmSum == 21) Player.GiveMoney(PlayerSplitArmBet);
+            }
+            else
+            {
+                if (playerArmSum == dealerArmSum) Player.GiveMoney(PlayerArmBet);
+                else if (playerArmSum > dealerArmSum && playerArmSum <= 21) Player.GiveMoney((int)(PlayerArmBet * 1.5));
+
+                if (playerSplitArmSum == dealerArmSum) Player.GiveMoney(PlayerSplitArmBet);
+                else if (playerSplitArmSum > dealerArmSum && playerSplitArmSum <= 21) Player.GiveMoney((int)(PlayerSplitArmBet * 1.5));
             }
         }
 
@@ -200,9 +234,12 @@ namespace ConsoleBlackJack.Core
         /// <summary>
         /// Выдать карту из колоды диллеру
         /// </summary>
-        public static void GiveCardToDealler()
+        public static void GiveCardToDealer()
         {
-            DeallerCards.Add(deck.TakeCard());
+            if (GetDealerArmSum() < 17)
+            {
+                DealerCards.Add(deck.TakeCard());
+            }
         }
 
         /// <summary>
@@ -222,15 +259,6 @@ namespace ConsoleBlackJack.Core
         public static void SetGameStage(GameStage  gameStage)
         {
             GameStage = gameStage;
-        }
-
-        /// <summary>
-        /// Задать настройки игры
-        /// </summary>
-        /// <param name="gameSettings"></param>
-        public static void SetGameSettings(GameSettings gameSettings)
-        {
-            GameSettings = gameSettings.Clone();
         }
 
         /// <summary>
@@ -308,6 +336,53 @@ namespace ConsoleBlackJack.Core
             }
             return result;
         }
+
+        /// <summary>
+        /// Сумма карт в руке диллера
+        /// </summary>
+        /// <returns></returns>
+        public static int GetDealerArmSum()
+        {
+            int result = 0;
+            int ACount = 0;
+            for (int i = 0; i < DealerCards.Count; i++)
+            {
+                if (DealerCards[i].CardValue == CardValue.J ||
+                    DealerCards[i].CardValue == CardValue.Q ||
+                    DealerCards[i].CardValue == CardValue.K)
+                {
+                    result += 10;
+                }
+                else if (DealerCards[i].CardValue == CardValue.A)
+                {
+                    ACount++;
+                }
+                else
+                {
+                    result += (int)DealerCards[i].CardValue;
+                }
+            }
+            result += ACount;
+            for (int i = 0; i < ACount; i++)
+            {
+                result += 10;
+                if (result > 21)
+                {
+                    result -= 10;
+                    return result;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameSettings"></param>
+        public static void SetGameSettings(GameSettings gameSettings)
+        {
+            GameSettings = gameSettings;
+        }
     }
 
     /// <summary>
@@ -318,7 +393,7 @@ namespace ConsoleBlackJack.Core
         GAME_START,
         BET,
         PLAYER_GIVE_START_CARDS,
-        DILLER_GIVE_START_CARDS,
+        DEALER_GIVE_START_CARDS,
         SPLIT,
         SPLIT_BET,
         ARM_STEP,
@@ -327,7 +402,7 @@ namespace ConsoleBlackJack.Core
         PLAYER_LOSE_ARM_STEP,
         PLAYER_WIN_SPLIT_ARM_STEP,
         PLAYER_LOSE_SPLIT_ARM_STEP,
-        DILLER_STEP,
+        DEALER_STEP,
         GAME_FINISH
     }
 }

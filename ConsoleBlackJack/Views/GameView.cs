@@ -136,17 +136,17 @@ namespace ConsoleBlackJack.Views
         /// </summary>
         public static void DrawDeallerArm()
         {
-            Console.SetCursorPosition(50, 4);
-            Console.Write("╔═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╗");
-            Console.SetCursorPosition(50, 5);
+            Console.SetCursorPosition(40, 12);
+            Console.Write("╔═" + new string('═', BlackJackGame.DealerCards.Count * 4) + "═╗");
+            Console.SetCursorPosition(40, 13);
             Console.Write("║ ");
-            for (int j = 0; j < BlackJackGame.DeallerCards.Count; j++)
+            for (int j = 0; j < BlackJackGame.DealerCards.Count; j++)
             {
-                Console.Write(ConsoleCardDrawer.CardToString(BlackJackGame.DeallerCards[j]));
+                Console.Write(ConsoleCardDrawer.CardToString(BlackJackGame.DealerCards[j]));
             }
             Console.Write(" ║");
-            Console.SetCursorPosition(50, 6);
-            Console.Write("╚═" + new string('═', BlackJackGame.DeallerCards.Count * 4) + "═╝");
+            Console.SetCursorPosition(40, 14);
+            Console.Write("╚═" + new string('═', BlackJackGame.DealerCards.Count * 4) + "═╝" + BlackJackGame.GetDealerArmSum());
         }
 
         public static void DrawBETControl()

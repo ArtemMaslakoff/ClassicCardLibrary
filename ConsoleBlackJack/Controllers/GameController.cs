@@ -20,6 +20,9 @@ namespace ConsoleBlackJack.Controllers
         /// </summary>
         public static void Start()
         {
+            Player.NewPlayer();
+            Player.GiveMoney(BlackJackGame.GameSettings.StartPlayerMoney);
+
             BlackJackGame.StartNewGame();
             BlackJackGame.NextStep();
             GameView.Draw();
@@ -32,6 +35,8 @@ namespace ConsoleBlackJack.Controllers
                 {
                     BlackJackGame.StartNewGame();
                     BlackJackGame.NextStep();
+
+                    GameView.Draw();
                 }
                 if (BlackJackGame.GameStage == GameStage.BET)
                 {
@@ -77,10 +82,10 @@ namespace ConsoleBlackJack.Controllers
                     GameView.Update();
                     GameView.DrawPlayerArm();
                 }
-                if (BlackJackGame.GameStage == GameStage.DILLER_GIVE_START_CARDS)
+                if (BlackJackGame.GameStage == GameStage.DEALER_GIVE_START_CARDS)
                 {
-                    BlackJackGame.GiveCardToDealler();
-                    BlackJackGame.GiveCardToDealler();
+                    BlackJackGame.GiveCardToDealer();
+                    BlackJackGame.GiveCardToDealer();
                     BlackJackGame.IsPossibleSplit = (Player.Arm.Cards[0].CardValue == Player.Arm.Cards[1].CardValue);
                     BlackJackGame.NextStep();
 
@@ -127,6 +132,7 @@ namespace ConsoleBlackJack.Controllers
                     if (consoleKey == ConsoleKey.UpArrow)
                     {
                         BlackJackGame.GiveCardToPlayerArm();
+                        BlackJackGame.NextStep();
 
                         GameView.Update();
                         GameView.DrawPlayerArm();
@@ -162,6 +168,7 @@ namespace ConsoleBlackJack.Controllers
                     if (consoleKey == ConsoleKey.UpArrow)
                     {
                         BlackJackGame.GiveCardToPlayerSplitArm();
+                        BlackJackGame.NextStep();
 
                         GameView.Update();
                         GameView.DrawPlayerSplitArm();
@@ -189,9 +196,28 @@ namespace ConsoleBlackJack.Controllers
 
                     if (consoleKey == ConsoleKey.Q) return;
                 }
-                if (BlackJackGame.GameStage == GameStage.DILLER_STEP)
+                if (BlackJackGame.GameStage == GameStage.DEALER_STEP)
+                {
+                    BlackJackGame.GiveCardToDealer();
+                    BlackJackGame.NextStep();
+
+                    GameView.DrawDeallerArm();
+
+                    if (consoleKey == ConsoleKey.Q) return;
+                }
+                if (BlackJackGame.GameStage == GameStage.GAME_FINISH)
                 {
                     consoleKey = Console.ReadKey().Key;
+
+                    if (consoleKey == ConsoleKey.UpArrow)
+                    {
+                        BlackJackGame.CalculateResult();
+                        BlackJackGame.NextStep();
+
+                        GameView.Draw();
+                        consoleKey = Console.ReadKey().Key;
+                    }
+
                     if (consoleKey == ConsoleKey.Q) return;
                 }
 

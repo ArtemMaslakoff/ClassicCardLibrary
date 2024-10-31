@@ -110,5 +110,14 @@ namespace ConsoleBlackJack.Core
             }
             return cards;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void ClearArms()
+        {
+            Arm = new Arm();
+            SplitArm = new Arm();
+        }
     }
 }

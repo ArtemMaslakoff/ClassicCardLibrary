@@ -45,13 +45,12 @@ namespace ConsoleBlackJack.Core
         }
 
         /// <summary>
-        /// Клонировать экземпляр класса
+        /// 
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public GameSettings Clone()
         {
-            GameSettings clone = new GameSettings();
+            var clone = new GameSettings();
             clone.StartPlayerMoney = StartPlayerMoney;
             clone.NumberOfDecks = NumberOfDecks;
             return clone;
